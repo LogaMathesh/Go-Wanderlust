@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather by Latitude and Longitude</title>
+</head>
+<body>
+    <h1>Weather Information by Coordinates</h1>
+    <label for="city">CITY:</label>
+    <input type="text" id="city" placeholder="Enter CITY"><br><br>
+    <button onclick="getcity()">Get city</button>
+
+    <p id="result"></p>
+
+    <script>
+        function getcity(){
+            const city = document.getElementById('city').value;
+            fetch(`http://127.0.0.1:5000/weather/${city}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('result').textContent = data.error;
+                    } else {
+                        document.getElementById('result').innerHTML = `
+                            City: ${data.city} <br>
+                            Temperature: ${data.temperature} °C <br>
+                            Weather: ${data.description}
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    document.getElementById('result').textContent = 'Failed to fetch weather data. Please try again.';
+                });
+        }
+        function getWeather() {
+            const latitude = document.getElementById('latitude').value;
+            const longitude = document.getElementById('longitude').value;
+
+            // Validate input
+            if (!latitude || !longitude) {
+                alert('Please enter both latitude and longitude!');
+                return;
+            }
+
+            // Call Flask API with latitude and longitude
+            fetch(`http://127.0.0.1:5000/weather/${latitude}/${longitude}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('result').textContent = data.error;
+                    } else {
+                        document.getElementById('result').innerHTML = `
+                            City: ${data.city} <br>
+                            Temperature: ${data.temperature} °C <br>
+                            Weather: ${data.description}
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    document.getElementById('result').textContent = 'Failed to fetch weather data. Please try again.';
+                });
+        }
+    </script>
+</body>
+</html>
